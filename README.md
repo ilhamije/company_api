@@ -47,6 +47,27 @@ $(venv) flask run
 ```
 You can stop it by using  CTRL + C  anytime
 
+## Pre-storing data  
+create a new database with postgresql. Assuming you have postgresql installed.  
+Please login into psql using your postgres account.
+```
+postgres=#  create user jhonny with password 'depp';
+postgres=#  create database company owner jhonny;
+```
+That's for :  
+database name = company  
+user = jhonny  
+password = depp  
+
+## Migrate / Upgrade our Models  
+Back to our venv
+```
+$(venv) flask db migrate  
+$(venv) flask db upgrade  
+```
+Now your application is ready to use database  
+
+
 On the other terminal, try this
 ## Storing the saved json file into database
 ```
