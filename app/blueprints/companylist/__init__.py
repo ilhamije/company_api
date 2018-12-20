@@ -8,4 +8,4 @@ api = Blueprint('companylist', __name__)
 
 api.add_url_rule('/', view_func=index)
 api.add_url_rule('/companies', view_func=get_companies)
-api.add_url_rule('/db_update', view_func=main_update)
+api.add_url_rule('/db_update', view_func=main_update, methods=['POST'])

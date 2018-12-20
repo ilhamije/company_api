@@ -1,7 +1,5 @@
 """ this module contains the REST endpoint"""
-import logging
-# import datetime
-# import json
+# import logging
 from flask import jsonify, request
 from app import Session
 from models import Company_List
@@ -42,7 +40,11 @@ def get_companies():
                 statuscode = 200
                 message = "Successful"
                 total = len(results)
-            return jsonify({"status_code": statuscode, "message": message, "data": results, "total": total})
+
+            return jsonify({"status_code": statuscode,
+                            "message": message,
+                            "data": results,
+                            "total": total})
 
         elif "industry" in request.args:
             # getting company with specific industry/sector
@@ -70,10 +72,14 @@ def get_companies():
                 statuscode = 200
                 message = "Successful"
                 total = len(results)
-            return jsonify({"status_code": statuscode, "message": message, "data": results, "total": total})
+            return jsonify({"status_code": statuscode,
+                            "message": message,
+                            "data": results,
+                            "total": total})
 
         else:
-            return jsonify({"status_code": 404, "message": "Data not found"})
+            return jsonify({"status_code": 404,
+                            "message": "Data not found"})
 
     else:
         # getting all companies

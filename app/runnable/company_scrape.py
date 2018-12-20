@@ -33,9 +33,9 @@ def main():
     f = open(json_file, 'w')
     f.write(result)
     # if f.write(result):
-    #     print "data extracted to: " + json_file
+    #     print ("data extracted to: " + str(json_file))
     # else:
-    #     print "data extracting is failed"
+    #     print ("data extracting is failed")
 
 
 if __name__ == "__main__":

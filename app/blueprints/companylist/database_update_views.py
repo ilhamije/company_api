@@ -1,18 +1,11 @@
 """ this module contains the REST endpoint"""
-# from models import Company_List, db
-from app import db
-
 import os
 import json
 import time
 
-# import logging
-# import logging.config
-# import datetime
-# from flask import jsonify
-
 from app import Session
 from models import Company_List
+from flask import request, jsonify
 
 
 APP_ROOT = os.path.dirname(os.path.dirname(os.path.dirname((os.path.abspath(__file__)))))
@@ -26,7 +19,7 @@ company_data = json.load(f)
 def return_existing_kode(kode):
     session = Session()
     check_if_present = session.query(Company_List).\
-        filter(Company_List.company_code==kode).\
+        filter(Company_List.company_code == kode).\
         scalar()
     session.close()
     return check_if_present
@@ -81,14 +74,20 @@ def main_update():
     """Main loop of the script, to interate data data_processing for each company."""
     session = Session()
     timer_count = 0
-    for i in range(len(company_data)):
-        timer_count += 1
-        print (timer_count)
-        # count all yield
-        data_processing(company_data, i)
-        time.sleep(2)
+    try:
+        if request.method == 'POST':
+            secret = request.form['secretkey']
+            if secret == "inirahasia":
+                for i in range(len(company_data)):
+                    timer_count += 1
+                    print (timer_count)
+                    data_processing(company_data, i)
+                    time.sleep(2)
+                session.close()
+                return ("DONE")
+            else:
+                return jsonify({"Message": "Invalid credentials."})
+    except Exception as e:
+        return jsonify({"Message": "Invalid."})
 
-    session.close()
-    # return all statistik
-    return ("DONE")
     # logger.info("---END---")
