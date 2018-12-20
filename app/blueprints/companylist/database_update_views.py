@@ -1,16 +1,18 @@
 """ this module contains the REST endpoint"""
-from models import Company_List, db
+# from models import Company_List, db
+from app import db
 
 import os
 import json
 import time
 
-import logging
-import logging.config
+# import logging
+# import logging.config
 # import datetime
-from flask import jsonify
+# from flask import jsonify
 
-# from models import db, Company_List
+from app import Session
+from models import Company_List
 
 
 APP_ROOT = os.path.dirname(os.path.dirname(os.path.dirname((os.path.abspath(__file__)))))
@@ -22,13 +24,16 @@ company_data = json.load(f)
 
 
 def return_existing_kode(kode):
-    db.session.commit()
-    check_if_present = db.session.query(Company_List).filter_by(company_code=kode).first()
-    db.session.close()
+    session = Session()
+    check_if_present = session.query(Company_List).\
+        filter(Company_List.company_code==kode).\
+        scalar()
+    session.close()
     return check_if_present
 
 
 def data_processing(data, i):
+    session = Session()
     existing_kode = return_existing_kode(kode=data[i]["company_code"])
     val = {
         "npwp": data[i].get('npwp', ''),
@@ -45,27 +50,45 @@ def data_processing(data, i):
         "crawled_on": data[i].get('crawled_on', ''),
     }
 
+    kode = data[i]["company_code"]
     if existing_kode:
-        existing_company = Company_List.query.filter_by(company_code=data[i]["company_code"])
+        existing_company = Company_List.query.filter_by(company_code=kode)
         existing_company.update(val)
-        db.session.commit()
-        print ("data updated")
-        print (val)
+        try:
+            session.commit()
+            res = ("data UPDATED : " + str(kode))
+            print (res)
+            print (val)
+            # return/yield counter
+
+        except Exception as e:
+            print("data updating FAILED" + str(kode))
+
     else:
         new_company = Company_List(**val)
-        db.session.add(new_company)
-        print ("data added")
-        print (val)
-
+        session.add(new_company)
+        try:
+            session.commit()
+            print ("data ADDED : " + str(kode))
+            print (val)
+            # return/yield counter
+        except Exception as e:
+            print("data adding FAILED" + str(kode))
+            print (e.message)
 
 
 def main_update():
     """Main loop of the script, to interate data data_processing for each company."""
+    session = Session()
     timer_count = 0
     for i in range(len(company_data)):
-        data_processing(company_data, i)
-        time.sleep(2)
         timer_count += 1
         print (timer_count)
-    db.session.close()
+        # count all yield
+        data_processing(company_data, i)
+        time.sleep(2)
+
+    session.close()
+    # return all statistik
+    return ("DONE")
     # logger.info("---END---")

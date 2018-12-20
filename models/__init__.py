@@ -1,25 +1,23 @@
-import arrow
-
-# from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
-
+import arrow
 utc = arrow.utcnow()
 local_sg = utc.to('Asia/Singapore').format('DD MMM YYYY hh:mm')
+
+db = SQLAlchemy()
 
 
 class Company_List(db.Model):
     __tablename__ = 'company_list'
     id_company_list = db.Column(db.Integer, primary_key=True)
     npwp = db.Column(db.String(30))
-    company_name = db.Column(db.String(100))
+    company_name = db.Column(db.String(255))
     company_code = db.Column(db.String(10))
-    email = db.Column(db.String(100))
-    phone = db.Column(db.String(100))
-    fax = db.Column(db.String(100))
+    email = db.Column(db.String(255))
+    phone = db.Column(db.String(255))
+    fax = db.Column(db.String(255))
     address = db.Column(db.String(255))
-    website = db.Column(db.String(100))
+    website = db.Column(db.String(255))
     business = db.Column(db.Text())
     sector = db.Column(db.String(255))
     url = db.Column(db.String(150))
@@ -39,15 +37,3 @@ class Company_List(db.Model):
         self.sector = sector
         self.url = url
         self.crawled_on = crawled_on
-
-    # def save(self, val):
-    #     db.session.add(val)
-    #     db.session.commit()
-    #     db.session.close()
-    #
-    # def update(self):
-    #     db.session.commit()
-    #     db.session.close()
-
-    def __repr__(self):
-        return '<Company_List %r>' % self.company_name
