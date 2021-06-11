@@ -75,6 +75,6 @@ urllib3==1.24.1
 vine==1.1.4
 w3lib==1.19.0
 wcwidth==0.1.7
-websockets==7.0
+websockets==9.1
 Werkzeug==0.14.1
 zope.interface==4.6.0
